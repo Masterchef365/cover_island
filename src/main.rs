@@ -27,7 +27,11 @@ impl App for MyApp {
         };
 
         // Skybox
-        let skybox_mat = engine.add_material(&std::fs::read("./shaders/skybox.vert.spv")?, UNLIT_FRAG, DrawType::Triangles)?;
+        let skybox_mat = engine.add_material(
+            &std::fs::read("./shaders/skybox.vert.spv")?, 
+            &std::fs::read("./shaders/skybox.frag.spv")?, 
+            DrawType::Triangles
+        )?;
         let (vertices, indices) = skybox_mesh();
         let skybox = Object {
             mesh: engine.add_mesh(&vertices, &indices)?,
