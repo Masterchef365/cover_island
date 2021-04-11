@@ -1,7 +1,7 @@
 use anyhow::Result;
 use klystron::{
     runtime_3d::{launch, App},
-    DrawType, Engine, FramePacket, Object, Vertex, UNLIT_FRAG, UNLIT_VERT, Matrix4
+    DrawType, Engine, FramePacket, Object, Vertex, Matrix4
 };
 use klystron_obj::{self as obj, parse_obj};
 use std::fs;
@@ -16,7 +16,7 @@ struct MyApp {
 const WATER_SCALE: f32 = 0.2;
 const WATER_SIZE: i32 = 50;
 const WATER_WIDTH: f32 = WATER_SIZE as f32 * WATER_SCALE;
-const WATER_INSTANCE_WIDTH: i32 = 5;
+const WATER_INSTANCE_WIDTH: i32 = 7;
 
 impl App for MyApp {
     const NAME: &'static str = "MyApp";

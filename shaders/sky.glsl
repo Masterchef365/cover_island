@@ -1,7 +1,8 @@
 const float PI = 3.141592;
 
 float sun_phase() {
-    return fract(anim * 0.1) * PI * 2.; 
+    //return fract(anim * 0.1) * PI * 2.; 
+    return fract(anim * 0.005) * PI * 2.; 
 }
 
 vec3 sun_pos() {
@@ -22,10 +23,10 @@ vec3 sky_color(vec3 dir) {
     	vec3(0.000,0.360,0.770), 
         clamp(dir.y * 2. + -0.040, 0., 1.)
     );
-    vec3 night = vec3(0., 0.01, 0.02);
-    float v = (cos(sun_phase()) + 1.) / 2.;
+    vec3 night = vec3(0., 0.005, 0.01);
+    float v = clamp(cos(sun_phase()) + 1., 0., 1.);
     return mix(
-        mix(night, twilight, v),
+        night,
         mix(twilight, day, v),
         v
     );
