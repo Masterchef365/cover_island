@@ -1,0 +1,10 @@
+[package]
+name = "vaporwave_island"
+version = "0.1.0"
+authors = ["Masterchef365 <duncan.freeman1@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+klystron = { path = "../klystron" }
+anyhow = "1"
+nalgebra = "0.22"
