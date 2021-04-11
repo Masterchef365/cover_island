@@ -13,6 +13,11 @@ struct MyApp {
     time: f32,
 }
 
+const WATER_SCALE: f32 = 0.2;
+const WATER_SIZE: i32 = 50;
+const WATER_WIDTH: f32 = WATER_SIZE as f32 * WATER_SCALE;
+const WATER_INSTANCE_WIDTH: i32 = 5;
+
 impl App for MyApp {
     const NAME: &'static str = "MyApp";
 
@@ -34,9 +39,8 @@ impl App for MyApp {
         };
 
         // Water
-        let size = 100;
-        let vertices = dense_grid_verts(size, 0.1);
-        let indices = dense_grid_tri_indices(size);
+        let vertices = dense_grid_verts(WATER_SIZE, WATER_SCALE);
+        let indices = dense_grid_tri_indices(WATER_SIZE);
         let water_mat = engine.add_material(
             &fs::read("./shaders/water.vert.spv")?, 
             &fs::read("./shaders/water.frag.spv")?, 
@@ -70,14 +74,24 @@ impl App for MyApp {
     }
 
     fn next_frame(&mut self, engine: &mut dyn Engine) -> Result<FramePacket> {
-        //self.islands.transform = Matrix4::from_euler_angles(0.0, self.time, 0.0);
+        let mut objects = Vec::new();
+        objects.push(self.islands);
+        objects.push(self.skybox);
+        let i = WATER_INSTANCE_WIDTH;
+        for x in -i..i {
+            for z in -i..i {
+                let x = x as f32 * WATER_WIDTH * 2.;
+                let z = z as f32 * WATER_WIDTH * 2.;
+                let mut water = self.water;
+                water.transform = Matrix4::new_translation(&nalgebra::Vector3::new(x, -1. / 16., z));
+                objects.push(water);
+            }
+        }
 
         engine.update_time_value(self.time)?;
         self.time += 0.01;
         Ok(FramePacket {
-            //objects: vec![self.islands],
-            //objects: vec![self.skybox, self.islands],
-            objects: vec![self.skybox, self.water],
+            objects,
         })
     }
 }
@@ -87,6 +101,7 @@ fn main() -> Result<()> {
     launch::<MyApp>(vr, ())
 }
 
+/*
 fn rainbow_cube() -> (Vec<Vertex>, Vec<u16>) {
     let vertices = vec![
         Vertex::new([-1.0, -1.0, -1.0], [0.0, 1.0, 1.0]),
@@ -106,6 +121,7 @@ fn rainbow_cube() -> (Vec<Vertex>, Vec<u16>) {
 
     (vertices, indices)
 }
+*/
 
 fn fullscreen_quad() -> (Vec<Vertex>, Vec<u16>) {
     let vert = |[x, y, z] : [f32; 3]| Vertex::new([x, y, z], [x.signum(), y.signum(), z.signum()]);

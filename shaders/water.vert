@@ -21,11 +21,12 @@ layout(location = 1) in vec3 inColor;
 layout(location = 0) out vec3 fragNormal;
 layout(location = 1) out vec3 fragRay;
 
+const float PI = 3.141592;
 void main() {
     vec3 pos = inPosition;
-    float angle = pos.x + pos.z + anim;
+    float angle = PI* (pos.x + pos.z) / 2. + anim;
 
-    const float mult = 1. / 5;
+    const float mult = 1. / 16;
     //const float mult = 0.;
 
     float y = cos(angle) * mult;
