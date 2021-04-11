@@ -1,8 +1,4 @@
-#!/bin/sh
-
-compile() {
-    glslc -g -O $1 -o $1.spv
-}
-
-compile unlit.vert
-compile unlit.frag
+#!/usr/bin/env bash
+for x in *.vert *.frag; do
+    glslc -g -O $x -o $x.spv
+done
