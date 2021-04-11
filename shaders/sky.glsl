@@ -6,10 +6,14 @@ vec3 sky_color(vec3 dir) {
     );
 }
 
-vec3 sky(vec3 dir) {
-    return sky_color(dir);
-}
-
 vec3 sun_pos() {
     return vec3(1., 1., 1.);
+}
+
+vec3 sky(vec3 dir) {
+    if (length(cross(dir, sun_pos())) < 0.1) {
+        return vec3(1.);
+    } else {
+        return sky_color(dir);
+    }
 }

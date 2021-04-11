@@ -40,7 +40,7 @@ impl App for MyApp {
             &fs::read("./shaders/skybox.frag.spv")?, 
             DrawType::Triangles
         )?;
-        let (vertices, indices) = skybox_mesh();
+        let (vertices, indices) = fullscreen_quad();
         let skybox = Object {
             mesh: engine.add_mesh(&vertices, &indices)?,
             material: skybox_mat,
@@ -60,7 +60,8 @@ impl App for MyApp {
         engine.update_time_value(self.time)?;
         self.time += 0.01;
         Ok(FramePacket {
-            objects: vec![self.skybox, self.islands],
+            objects: vec![self.islands],
+            //objects: vec![self.skybox, self.islands],
         })
     }
 }
@@ -90,21 +91,17 @@ fn rainbow_cube() -> (Vec<Vertex>, Vec<u16>) {
     (vertices, indices)
 }
 
-fn skybox_mesh() -> (Vec<Vertex>, Vec<u16>) {
+fn fullscreen_quad() -> (Vec<Vertex>, Vec<u16>) {
     let vert = |[x, y, z] : [f32; 3]| Vertex::new([x, y, z], [x.signum(), y.signum(), z.signum()]);
     let vertices = vec![
-        vert([-1.0, -1.0, -1.0]),
-        vert([1.0, -1.0, -1.0]),
-        vert([1.0, 1.0, -1.0]),
-        vert([-1.0, 1.0, -1.0]),
-        vert([-1.0, -1.0, 1.0]),
-        vert([1.0, -1.0, 1.0]),
-        vert([1.0, 1.0, 1.0]),
-        vert([-1.0, 1.0, 1.0]),
+        vert([-1.0, -1.0, 0.0]),
+        vert([1.0, -1.0, 0.0]),
+        vert([1.0, 1.0, 0.0]),
+        vert([-1.0, 1.0, 0.0]),
     ];
 
     let indices = vec![
-        0, 1, 3, 3, 1, 2, 1, 5, 2, 2, 5, 6, 5, 4, 6, 6, 4, 7, 4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6, 4, 5, 0, 0, 5, 1,
+        3, 1, 0, 2, 1, 3,
     ];
 
     (vertices, indices)

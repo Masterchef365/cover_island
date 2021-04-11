@@ -21,7 +21,7 @@ layout(location = 1) in vec3 inColor;
 layout(location = 0) out vec3 fragColor;
 
 void main() {
-    gl_Position = vec4(vec2(mat3(camera[gl_ViewIndex]) * inPosition), 0.9998, 1.0);
-    fragColor = inColor;
+    gl_Position = vec4(inPosition.xy, 1. - 0.9998, 1.);
+    fragColor = inPosition;
 }
 
