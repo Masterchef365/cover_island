@@ -16,7 +16,7 @@ void main() {
     vec3 normal = normalize(fragNormal);
     vec3 ray = normalize(fragRay);
     vec3 ref = reflect(ray, normal);
-    //ref.y = abs(ref.y);
+    ref.y = abs(ref.y);
     vec3 color = sky(ref);
     //vec3 color = normalize(fragRay);
     //vec3 color = normalize(fragNormal);

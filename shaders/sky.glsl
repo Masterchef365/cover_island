@@ -3,8 +3,8 @@ vec3 sky_color(vec3 dir) {
         vec3(0.835,0.476,0.831), 
     	vec3(0.000,0.468,1.000), 
         //(dir.y + -0.408) / 0.464
-        //clamp(dir.y, 0., 1.)
-        float(dir.y > 0.)
+        clamp(dir.y * 3., 0., 1.)
+        //float(dir.y > -0.1)
     );
 }
 

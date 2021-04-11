@@ -25,8 +25,9 @@ void main() {
     vec3 pos = inPosition;
     float angle = pos.x + pos.z + anim;
 
-    //const float mult = 1. / 5;
-    const float mult = 0.;
+    const float mult = 1. / 5;
+    //const float mult = 0.;
+
     float y = cos(angle) * mult;
     pos = vec3(pos.x, y, pos.z);
     vec4 pos_world = model * vec4(pos, 1.0);
