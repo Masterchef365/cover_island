@@ -10,6 +10,8 @@ layout(binding = 1) uniform Animation {
 
 layout(location = 0) out vec4 outColor;
 
+#include "sky.glsl"
+
 void main() {
     vec3 color = vec3(0.);
     if (fragPos.y > 0.362596) {
