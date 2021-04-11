@@ -13,11 +13,13 @@ layout(location = 0) out vec4 outColor;
 #include "sky.glsl"
 
 void main() {
-    vec3 ref = reflect(normalize(fragRay), normalize(fragNormal));
-    ref.y = abs(ref.y);
+    vec3 normal = normalize(fragNormal);
+    vec3 ray = normalize(fragRay);
+    vec3 ref = reflect(ray, normal);
+    //ref.y = abs(ref.y);
     vec3 color = sky(ref);
     //vec3 color = normalize(fragRay);
-    //vec3 color = fragNormal;
+    //vec3 color = normalize(fragNormal);
     //vec3 color = ref;
     outColor = vec4(color, 1.0);
 }

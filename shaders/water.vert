@@ -25,13 +25,15 @@ void main() {
     vec3 pos = inPosition;
     float angle = pos.x + pos.z + anim;
 
-    float y = cos(angle);
-    y /= 5.;
+    //const float mult = 1. / 5;
+    const float mult = 0.;
+    float y = cos(angle) * mult;
     pos = vec3(pos.x, y, pos.z);
     vec4 pos_world = model * vec4(pos, 1.0);
     gl_Position = camera[gl_ViewIndex] * pos_world;
 
-    fragNormal = normalize(vec3(-sin(angle), 1., -sin(angle)));
-    fragRay = inverse(mat3(camera[gl_ViewIndex])) * vec3(gl_Position.xy, -1.);
+    fragNormal = vec3(-sin(angle) * mult, 1., -sin(angle) * mult) / 5.;
+    mat3 inv_cam = inverse(mat3(camera[gl_ViewIndex]));
+    fragRay = inv_cam * gl_Position.xyz;
 }
 
