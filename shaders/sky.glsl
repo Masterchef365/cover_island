@@ -7,7 +7,8 @@ vec3 sky_color(vec3 dir) {
 }
 
 vec3 sun_pos() {
-    return vec3(1., 1., 1.);
+    //return vec3(1., 1., 1.);
+    return vec3(cos(anim), sin(anim), 0.);
 }
 
 vec3 sky(vec3 dir) {

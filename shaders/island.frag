@@ -19,7 +19,7 @@ void main() {
     } else {
         color = vec3(1.000,0.822,0.642);
     }
-    vec3 sun = vec3(1., 1., 1.);
+    vec3 sun = sun_pos();
     float sun_amt = dot(sun, fragNorm);
     color *= mix(0.2, 1.0, clamp(sun_amt, 0., 1.));
     outColor = vec4(color, 1.0);
