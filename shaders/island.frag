@@ -22,6 +22,7 @@ void main() {
     vec3 sun = sun_pos();
     vec3 skyc = sky_color(fragNorm);
     float sun_amt = clamp(dot(sun, fragNorm), 0.0, 1.);
+    sun_amt *= clamp(sun.y + 0.1, 0., 1.);
     if (sun.y < 0.) { sun_amt = 0.0; }
     color = skyc * color + sun_amt * color;
     outColor = vec4(color, 1.0);
