@@ -11,7 +11,8 @@ vec3 sun_pos() {
 }
 
 vec3 sky(vec3 dir) {
-    if (length(cross(dir, sun_pos())) < 0.1) {
+    vec3 sunp = sun_pos();
+    if (length(cross(dir, sunp)) < 0.1 && dot(dir, sunp) > 0.) {
         return vec3(1.);
     } else {
         return sky_color(dir);
