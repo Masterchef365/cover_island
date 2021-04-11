@@ -3,10 +3,12 @@ use klystron::{
     runtime_3d::{launch, App},
     DrawType, Engine, FramePacket, Object, Vertex, UNLIT_FRAG, UNLIT_VERT, Matrix4
 };
+use klystron_obj::{self as obj, parse_obj};
+use std::fs;
 
 struct MyApp {
     skybox: Object,
-    rainbow_cube: Object,
+    islands: Object,
     time: f32,
 }
 
@@ -16,20 +18,26 @@ impl App for MyApp {
     type Args = ();
 
     fn new(engine: &mut dyn Engine, _args: Self::Args) -> Result<Self> {
-        let unlit_mat = engine.add_material(UNLIT_VERT, UNLIT_FRAG, DrawType::Triangles)?;
+        //let unlit_mat = engine.add_material(UNLIT_VERT, UNLIT_FRAG, DrawType::Triangles)?;
 
-        // Rainbow cube
-        let (vertices, indices) = rainbow_cube();
-        let rainbow_cube = Object {
+        // Islands
+        let obj = parse_obj(&*fs::read("./assets/island.obj")?)?;
+        let (vertices, indices) = obj::triangles(&obj, obj::ColorMode::Normal)?;
+        let islands_mat = engine.add_material(
+            &fs::read("./shaders/island.vert.spv")?, 
+            &fs::read("./shaders/island.frag.spv")?, 
+            DrawType::Triangles
+        )?;
+        let islands = Object {
             mesh: engine.add_mesh(&vertices, &indices)?,
-            material: unlit_mat,
+            material: islands_mat,
             transform: Matrix4::identity(),
         };
 
         // Skybox
         let skybox_mat = engine.add_material(
-            &std::fs::read("./shaders/skybox.vert.spv")?, 
-            &std::fs::read("./shaders/skybox.frag.spv")?, 
+            &fs::read("./shaders/skybox.vert.spv")?, 
+            &fs::read("./shaders/skybox.frag.spv")?, 
             DrawType::Triangles
         )?;
         let (vertices, indices) = skybox_mesh();
@@ -41,18 +49,18 @@ impl App for MyApp {
 
         Ok(Self {
             time: 0.0,
-            rainbow_cube,
+            islands,
             skybox,
         })
     }
 
     fn next_frame(&mut self, engine: &mut dyn Engine) -> Result<FramePacket> {
-        self.rainbow_cube.transform = Matrix4::from_euler_angles(0.0, self.time, 0.0);
+        //self.islands.transform = Matrix4::from_euler_angles(0.0, self.time, 0.0);
 
         engine.update_time_value(self.time)?;
         self.time += 0.01;
         Ok(FramePacket {
-            objects: vec![self.skybox, self.rainbow_cube],
+            objects: vec![self.skybox, self.islands],
         })
     }
 }
@@ -101,3 +109,54 @@ fn skybox_mesh() -> (Vec<Vertex>, Vec<u16>) {
 
     (vertices, indices)
 }
+
+fn dense_grid_verts(size: i32, scale: f32) -> Vec<Vertex> {
+    (-size..=size)
+        .map(|x| (-size..=size).map(move |y| (x, y)))
+        .flatten()
+        .map(|(x, y)| {
+            let (x, y) = (x as f32, y as f32);
+            let size = size as f32;
+            Vertex {
+                pos: [x * scale, 0., y * scale],
+                color: [x / size, y / size, 0.],
+            }
+        })
+        .collect()
+}
+
+fn dense_grid_edge_indices(width: u16) -> impl Iterator<Item = u16> {
+    (0..width - 1)
+        .map(move |x| (0..width - 1).map(move |y| (x, y)))
+        .flatten()
+        .map(move |(x, y)| x + y * width)
+}
+
+/*
+fn dense_grid_wire_indices(size: i32) -> Vec<u16> {
+    let width = (size * 2 + 1) as u16;
+    let mut indices = Vec::new();
+    for base in dense_grid_edge_indices(width) {
+        indices.push(base);
+        indices.push(base + 1);
+        indices.push(base);
+        indices.push(base + width);
+    }
+    indices
+}
+*/
+
+fn dense_grid_tri_indices(size: i32) -> Vec<u16> {
+    let width = (size * 2 + 1) as u16;
+    let mut indices = Vec::new();
+    for base in dense_grid_edge_indices(width) {
+        indices.push(base);
+        indices.push(base + 1);
+        indices.push(base + width);
+        indices.push(base + 1);
+        indices.push(base + width + 1);
+        indices.push(base + width);
+    }
+    indices
+}
+

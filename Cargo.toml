@@ -6,5 +6,6 @@ edition = "2018"
 
 [dependencies]
 klystron = { path = "../klystron" }
+klystron_obj = { path = "../obj_klystron" }
 anyhow = "1"
 nalgebra = "0.22"
