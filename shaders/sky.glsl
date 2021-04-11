@@ -7,7 +7,7 @@ float sun_phase() {
 vec3 sun_pos() {
     //return vec3(1., 0.1, 1.);
     float a = sun_phase();
-    return vec3(cos(a), sin(a), 0.);
+    return vec3(0., cos(a), sin(a));
 }
 
 vec3 sky_color(vec3 dir) {
@@ -23,7 +23,7 @@ vec3 sky_color(vec3 dir) {
         clamp(dir.y * 2. + -0.040, 0., 1.)
     );
     vec3 night = vec3(0., 0.01, 0.02);
-    float v = (sin(sun_phase()) + 1.) / 2.;
+    float v = (cos(sun_phase()) + 1.) / 2.;
     return mix(
         mix(night, twilight, v),
         mix(twilight, day, v),
