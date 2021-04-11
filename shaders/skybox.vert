@@ -18,10 +18,12 @@ layout(push_constant) uniform Model {
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inColor;
 
-layout(location = 0) out vec3 fragColor;
+layout(location = 0) out mat3 camInv;
+layout(location = 3) out vec3 fragPos;
 
 void main() {
-    gl_Position = vec4(inPosition.xy, 1. - 0.9998, 1.);
-    fragColor = inPosition;
+    gl_Position = vec4(inPosition.xy, 0.9998, 1.);
+    camInv = inverse(mat3(camera[gl_ViewIndex]));
+    fragPos = inPosition;
 }
 
