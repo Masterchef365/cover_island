@@ -9,6 +9,7 @@ use std::fs;
 struct MyApp {
     skybox: Object,
     islands: Object,
+    water: Object,
     time: f32,
 }
 
@@ -18,8 +19,6 @@ impl App for MyApp {
     type Args = ();
 
     fn new(engine: &mut dyn Engine, _args: Self::Args) -> Result<Self> {
-        //let unlit_mat = engine.add_material(UNLIT_VERT, UNLIT_FRAG, DrawType::Triangles)?;
-
         // Islands
         let obj = parse_obj(&*fs::read("./assets/island.obj")?)?;
         let (vertices, indices) = obj::triangles(&obj, obj::ColorMode::Normal)?;
@@ -31,6 +30,21 @@ impl App for MyApp {
         let islands = Object {
             mesh: engine.add_mesh(&vertices, &indices)?,
             material: islands_mat,
+            transform: Matrix4::identity(),
+        };
+
+        // Water
+        let size = 100;
+        let vertices = dense_grid_verts(size, 0.1);
+        let indices = dense_grid_tri_indices(size);
+        let water_mat = engine.add_material(
+            &fs::read("./shaders/water.vert.spv")?, 
+            &fs::read("./shaders/water.frag.spv")?, 
+            DrawType::Triangles
+        )?;
+        let water = Object {
+            mesh: engine.add_mesh(&vertices, &indices)?,
+            material: water_mat,
             transform: Matrix4::identity(),
         };
 
@@ -51,6 +65,7 @@ impl App for MyApp {
             time: 0.0,
             islands,
             skybox,
+            water,
         })
     }
 
@@ -61,7 +76,8 @@ impl App for MyApp {
         self.time += 0.01;
         Ok(FramePacket {
             //objects: vec![self.islands],
-            objects: vec![self.skybox, self.islands],
+            //objects: vec![self.skybox, self.islands],
+            objects: vec![self.skybox, self.water],
         })
     }
 }
